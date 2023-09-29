@@ -15,11 +15,16 @@ class SongController extends Controller
      */
     public function index()
     {
-        $songs = Song::all();
+        $songs = Song::paginate(10);
+
+        // foreach ($songs as $song) {
+        //     $song->full_cover_img = asset('storage/'.$song->cover_img);
+        // }
 
         return response()->json([
             'success' => true,
             'songs' => $songs,
+            // 'base_img_path' => asset('storage/')
         ]);
     }
 

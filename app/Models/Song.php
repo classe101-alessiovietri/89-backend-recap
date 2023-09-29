@@ -16,4 +16,18 @@ class Song extends Model
         'is_single',
         'cover_img',
     ];
+
+    protected $appends = [
+        'full_cover_img'
+    ];
+
+    public function getFullCoverImgAttribute()
+    {
+        if ($this->cover_img) {
+            return asset('storage/'.$this->cover_img);
+        }
+        else {
+            return null;
+        }
+    }
 }
