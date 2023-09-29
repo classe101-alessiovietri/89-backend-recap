@@ -1,66 +1,53 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Come avviare e sviluppare un progetto in Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Passi post-clone di una repo di Laravel
+1. Clono la repo del nuovo esercizio (che probabilmente è la copia del template)
+2. Copio il file .env.example e lo rinomino in .env (senza cancellare il file .env.example)
+3. Apro il terminale ed eseguo il comando composer install
+4. Dopo l'esecuzione di composer install, eseguo nel terminale il comando php artisan key:generate
+5. Dopo l'esecuzione di php artisan key:generate, eseguo nel terminale il comando npm i
+6. Dopo l'esecuzione di npm i:
+    a. O avvio npm run dev
+    b. Oppure eseguo il comando npm run build
+7. Se ne ho bisogno (MOLTO probabilmente si), collego il database modificando il file .env
+8. Avvio (se ho avviato npm run dev -> lo faccio in un altro terminale) il comando php artisan serve
 
-## About Laravel
+## Come aggiungere un'entità (e relativa CRUD) -> es. pasta, libri, macchine...
+0. **N.B. l'entità User è già implementata in Laravel**
+1. Creo una migration tramite il comando **php artisan make:migration create_NOMETABELLA_table** (es. create_pastas_table)
+2. Riempio la migration con le colonne necessarie
+3. Eseguo la migration tramite il comando **php artisan migrate**
+4. Creo il model associato alla mia entità tramite il comando **php artisan make:model NOMEENTITA** (es. Pasta)
+5. Creo il seeder associato alla mia entità tramite il comando **php artisan make:seeder NOMEENTITASeeder** (es. PastaSeeder)
+6. Riempio il seeder con le operazioni necessarie a creare i salvare i miei dati iniziali (quelli reali)/di test (quelli fake)
+7. Eseguo il seeder con il comando **php artisan db:seed --class=NOMEENTITASeeder**
+8. Creo un resource controller tramite il comando **php artisan make:controller NOMEENTITAController --resource** (es. PastaController)
+9. Associo le funzioni (già definite) del nuovo controller alle rispettive rotte aggiungendo in web.php **Route::resource('NOMETABELLA', NOMEENTITAController::class)**
+10. Riempio i corpi delle funzioni secondo necessità
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Come esporre degli endpoint API
+1. Pensare cosa vogliamo esporre tramite API (molto probabilmente, solo la R di CRUD)
+2. Raggruppiamo tutte le rotte API che definiremo sotto il gruppo:
+    Route::name('api.')->group(function () { ... });
+3. Se le nostre chiamate devono essere rese possibili solo per il nostro frontend:
+    1. Aggiungiamo la variabile APP_FRONTEND_URL nel file .env con il valore del "dominio" del nostro frontend
+    2. Apriamo il file config/cors.php e modifichiamo il valore della chiave 'allowed_origins' da ['*'] a [env('APP_FRONTEND_URL')] (con un eventuale valore di default per la funzione env())
+4. Creiamo il controller API che ci serve (sotto la cartella app/Http/Controllers/Api)
+5. Definiamo, all'interno del controller che abbiamo appena creato, le funzioni che ci servono:
+    - Se stiamo implementando la versione API della R di CRUD, ci serviranno le funzione index e show
+    - Se definiamo la funzione index, ragioniamo sul fatto se ci serve la paginazione o meno (ragioniamoci ATTENTAMENTE)
+    - Tutte le funzioni che definiremo nel controller "DOVREBBERO" restituire response()->json([ ... ])
+    - La sintassi del JSON restituito è arbitraria
+6. Definiamo le rotte che si collegano alle funzioni definite al punto 5 all'interno del file routes/api.php
+7. Per ogni endpoint API definito, lo testiamo con Postman
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Come usare Vue Router
+1. Installiamo il pacchetto tramite il comando npm install vue-router
+2. Creiamo il file router.js nella cartella src
+3. Ci copiamo il contenuto da incollare nel file router.js (contenuto di base, perché poi i componenti e le rotte li definiremo noi)
+4. Importiamo router dentro main.js tramite la riga "import router from './router';"
+5. Dopo createApp(App), concateniamo .use(router)
+6. Inseriamo in uno dei nostri componenti il componente <router-view></router-view> (probabilmente lo inseriremo in MainComponent)
+7. Per creare dei link, useremo il componente <router-link :to="{ name: 'nome-rotta', params: { eventuali: 1, nomi: 2, parametri: 3}}"></router-link>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Passi workflow di Git
