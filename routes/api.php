@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 // Controllers
 use App\Http\Controllers\Api\SongController;
+use App\Http\Controllers\Api\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,5 +26,7 @@ Route::name('api.')->group(function () {
 
     Route::get('/songs', [SongController::class, 'index'])->name('songs.index');
     Route::get('/songs/{slug}', [SongController::class, 'show'])->name('songs.show');
+
+    Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 
 });

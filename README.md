@@ -51,3 +51,25 @@
 7. Per creare dei link, useremo il componente <router-link :to="{ name: 'nome-rotta', params: { eventuali: 1, nomi: 2, parametri: 3}}"></router-link>
 
 ## Passi workflow di Git
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------
+
+1. integrare js e blade
+2. link "da vue da a laravel"
+3. api key per proteggere rotte api
+4. deploy di un sito
+5. validation di una mail
+6. remember me come funziona
